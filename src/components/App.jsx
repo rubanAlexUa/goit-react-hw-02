@@ -20,24 +20,18 @@ function App() {
   });
   useEffect(() => {
     window.localStorage.setItem("goodFeedback", rating.good);
-    console.log("Good: " + rating.good);
-  }, [rating.good]);
-  useEffect(() => {
     window.localStorage.setItem("neutralFeedback", rating.neutral);
-    console.log("Neutral: " + rating.neutral);
-  }, [rating.neutral]);
-  useEffect(() => {
     window.localStorage.setItem("badFeedback", rating.bad);
-    console.log("Bad: " + rating.bad);
-  }, [rating.bad]);
-
+  }, [rating]);
   const updateFeedBack = (feedbackType) => {
     changeRating({
       ...rating,
       [feedbackType]: rating[feedbackType] + 1,
     });
   };
-  const resetRating = (totalFeedback) => {
+
+  const resetRating = () => {
+    console.log("hello");
     changeRating({
       good: 0,
       neutral: 0,
@@ -45,17 +39,21 @@ function App() {
     });
   };
   const totalFeedback = rating.good + rating.neutral + rating.bad;
+  const positiveFeedback = Math.round((rating.good / totalFeedback) * 100);
   return (
     <>
       <Description />
-      <Options onClick={() => updateFeedBack("good")}>Good</Options>
-      <Options onClick={() => updateFeedBack("neutral")}>Neutral</Options>
-      <Options onClick={() => updateFeedBack("bad")}>Bad</Options>
-      {totalFeedback > 0 && (
-        <Options onClick={() => resetRating(totalFeedback)}> Reset </Options>
-      )}
+      <Options
+        onClick={updateFeedBack}
+        totalFeedback={totalFeedback}
+        resetFunc={resetRating}
+      />
       {totalFeedback > 0 ? (
-        <Feedback rating={rating} totalFeedback={totalFeedback} />
+        <Feedback
+          rating={rating}
+          totalFeedback={totalFeedback}
+          positiveFeedback={positiveFeedback}
+        />
       ) : (
         <Notification />
       )}
